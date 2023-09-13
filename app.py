@@ -2,6 +2,8 @@ import streamlit as st
 import pickle
 import requests
 import pandas as pd
+import urllib.request
+import gdown
 
 
 def fetch_poster(movie_id):
@@ -26,7 +28,21 @@ def recommend(movie):
 
 
 movies_dict = pickle.load(open('movie_dict.pkl.', 'rb'))
-similarity = pickle.load(open('similarity.pkl', 'rb'))
+file_id = '1xugIC10orCX3Kx_M7lRLzxU9V5rg0NWM'
+
+# URL to download the file
+url = f'https://drive.google.com/uc?id={file_id}'
+
+try:
+    # Download the file using gdown
+    gdown.download(url, 'similarity.pkl', quiet=False)
+
+    # Now you can load the binary data as a pickle
+    with open('similarity.pkl', 'rb') as f:
+        similarity = pickle.load(f)
+
+except Exception as e:
+    st.write(f"An error occurred: {e}")
 movies = pd.DataFrame(movies_dict)
 st.title('Movie Recommender System')
 selected_movies_name = st.selectbox(
